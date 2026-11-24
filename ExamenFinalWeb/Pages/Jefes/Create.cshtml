@@ -1,0 +1,63 @@
+@page
+@model ExamenFinalWeb.Pages.Jefes.CreateModel
+@{
+    ViewData["Title"] = "Nuevo jefe";
+}
+
+<h1 class="titulo mb-4"><i class="bi bi-person-plus"></i> Nuevo jefe</h1>
+
+@if (Model.MensajeError is not null)
+{
+    <div class="alert alert-danger">@Model.MensajeError</div>
+}
+
+<div class="card tarjeta" style="max-width: 560px;">
+    <div class="card-header">Datos del jefe</div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label asp-for="Jefe.Nombre" class="form-label">Nombre completo</label>
+                <input asp-for="Jefe.Nombre" class="form-control" placeholder="Ej: Juan Pérez" />
+                <span asp-validation-for="Jefe.Nombre" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Jefe.Cargo" class="form-label">Cargo</label>
+                <input asp-for="Jefe.Cargo" class="form-control" placeholder="Ej: Jefe de Proyecto" />
+                <span asp-validation-for="Jefe.Cargo" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Jefe.Correo" class="form-label">Correo</label>
+                <input asp-for="Jefe.Correo" type="email" class="form-control" placeholder="Ej: juan.perez@empresa.com" />
+                <span asp-validation-for="Jefe.Correo" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Foto" class="form-label">Foto (opcional)</label>
+                <input asp-for="Foto" type="file" accept="image/*" class="form-control" id="inputFoto" />
+                <span asp-validation-for="Foto" class="text-danger small"></span>
+                <img id="vistaPrevia" class="foto-grande mt-3 d-none" alt="Vista previa" />
+            </div>
+
+            <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Guardar</button>
+            <a asp-page="Index" class="btn btn-outline-success">Volver</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Muestra la foto elegida antes de guardar
+        document.getElementById('inputFoto').addEventListener('change', function () {
+            const img = document.getElementById('vistaPrevia');
+            if (this.files && this.files[0]) {
+                img.src = URL.createObjectURL(this.files[0]);
+                img.classList.remove('d-none');
+            } else {
+                img.classList.add('d-none');
+            }
+        });
+    </script>
+}

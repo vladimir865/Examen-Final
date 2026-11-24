@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Contratos/Contratos.csproj" />
+  <Project Path="ExamenFinalApi/ExamenFinalApi.csproj" />
+  <Project Path="ExamenFinalWeb/ExamenFinalWeb.csproj" />
+</Solution>

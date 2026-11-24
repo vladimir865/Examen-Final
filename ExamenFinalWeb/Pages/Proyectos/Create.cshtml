@@ -1,0 +1,61 @@
+@page
+@model ExamenFinalWeb.Pages.Proyectos.CreateModel
+@{
+    ViewData["Title"] = "Nuevo proyecto";
+}
+
+<h1 class="titulo mb-4"><i class="bi bi-folder-plus"></i> Nuevo proyecto</h1>
+
+@if (Model.MensajeError is not null)
+{
+    <div class="alert alert-danger">@Model.MensajeError</div>
+}
+
+<div class="card tarjeta" style="max-width: 620px;">
+    <div class="card-header">Datos del proyecto</div>
+    <div class="card-body">
+        <form method="post">
+            <div class="mb-3">
+                <label asp-for="Proyecto.Nombre" class="form-label">Nombre</label>
+                <input asp-for="Proyecto.Nombre" class="form-control" placeholder="Ej: Sistema de Ventas Tarija" />
+                <span asp-validation-for="Proyecto.Nombre" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Proyecto.Descripcion" class="form-label">Descripción</label>
+                <textarea asp-for="Proyecto.Descripcion" class="form-control" rows="3"
+                          placeholder="¿De qué trata el proyecto?"></textarea>
+                <span asp-validation-for="Proyecto.Descripcion" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Proyecto.Estado" class="form-label">Estado</label>
+                <select asp-for="Proyecto.Estado" asp-items="Model.ListaEstados" class="form-select"></select>
+                <span asp-validation-for="Proyecto.Estado" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Proyecto.IdJefe" class="form-label">Jefe a cargo</label>
+                @if (Model.JefesLibres.Count == 0)
+                {
+                    <div class="alert alert-warning py-2 mb-2 small">
+                        No hay jefes libres: todos ya están a cargo de un proyecto.
+                        <a asp-page="/Jefes/Create">Registra un jefe nuevo</a>.
+                    </div>
+                }
+                <select asp-for="Proyecto.IdJefe" asp-items="Model.JefesLibres" class="form-select">
+                    <option value="@Guid.Empty">-- Selecciona un jefe libre --</option>
+                </select>
+                <div class="form-text">Solo aparecen los jefes que todavía no tienen proyecto.</div>
+                <span asp-validation-for="Proyecto.IdJefe" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Guardar</button>
+            <a asp-page="Index" class="btn btn-outline-success">Volver</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

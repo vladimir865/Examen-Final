@@ -1,0 +1,104 @@
+@page
+@model ExamenFinalWeb.Pages.Proyectos.IndexModel
+@{
+    ViewData["Title"] = "Proyectos";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="titulo mb-0"><i class="bi bi-folder2-open"></i> Proyectos</h1>
+        <p class="text-muted mb-0 small">Cada jefe está a cargo de un solo proyecto.</p>
+    </div>
+    @if (Model.EsAdmin)
+    {
+        <a asp-page="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> Nuevo proyecto</a>
+    }
+</div>
+
+@if (TempData["Mensaje"] is string mensaje)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @mensaje
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (Model.MensajeError is not null)
+{
+    <div class="alert alert-danger">@Model.MensajeError</div>
+}
+
+<div class="card tarjeta">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Listado de proyectos</span>
+        <span class="badge bg-light text-success">@Model.Proyectos.Count registrados</span>
+    </div>
+    <div class="card-body pb-0">
+        <input id="buscar" class="form-control mb-3" placeholder="Filtrar por nombre, estado o jefe..." />
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Proyecto</th>
+                    <th>Estado</th>
+                    <th>Jefe a cargo</th>
+                    <th>ID</th>
+                    <th class="text-end">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Proyectos)
+                {
+                    <tr class="fila">
+                        <td>
+                            <div class="fw-semibold">@p.Nombre</div>
+                            <div class="text-muted small">@p.Descripcion</div>
+                        </td>
+                        <td><span class="badge @ExamenFinalWeb.Pages.Proyectos.IndexModel.ColorEstado(p.Estado)">@p.Estado</span></td>
+                        <td>
+                            <div>@p.NombreJefe</div>
+                            <div class="text-muted small">@p.CargoJefe</div>
+                        </td>
+                        <td>
+                            <span class="id-corto text-muted" title="@p.Id">@p.Id.ToString().Substring(0, 8)…</span>
+                            <button type="button" class="btn btn-sm btn-link p-0 ms-1 copiar" data-id="@p.Id" title="Copiar ID">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </td>
+                        <td class="text-end">
+                            <a asp-page="Buscar" asp-route-id="@p.Id" class="btn btn-sm btn-outline-success">Ver</a>
+                        </td>
+                    </tr>
+                }
+                <tr id="sinResultados" class="d-none">
+                    <td colspan="5" class="text-center text-muted py-4">No se encontraron proyectos.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Filtro mientras escribes
+        document.getElementById('buscar').addEventListener('input', function () {
+            const texto = this.value.toLowerCase().trim();
+            let visibles = 0;
+            document.querySelectorAll('.fila').forEach(fila => {
+                const coincide = fila.innerText.toLowerCase().includes(texto);
+                fila.classList.toggle('d-none', !coincide);
+                if (coincide) visibles++;
+            });
+            document.getElementById('sinResultados').classList.toggle('d-none', visibles > 0);
+        });
+
+        // Copiar el ID completo (para probar "Buscar por ID")
+        document.querySelectorAll('.copiar').forEach(boton => {
+            boton.addEventListener('click', () => {
+                navigator.clipboard.writeText(boton.dataset.id);
+                boton.innerHTML = '<i class="bi bi-check2 text-success"></i>';
+                setTimeout(() => boton.innerHTML = '<i class="bi bi-clipboard"></i>', 1500);
+            });
+        });
+    </script>
+}
